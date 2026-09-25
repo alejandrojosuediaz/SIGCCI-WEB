@@ -1,0 +1,31 @@
+---
+import Posts from "@/components/Posts.astro";
+import config from "@/config/config.json";
+import Base from "@/layouts/Base.astro";
+import Pagination from "@/layouts/components/Pagination.astro";
+import { mapNews } from "@/lib/utils/map";
+
+// const posts = await getSinglePage("posts");
+// const sortedPosts = sortByDate(posts);
+// const totalPages = Math.ceil(posts.length / config.settings.pagination);
+// const currentPosts = sortedPosts.slice(0, config.settings.pagination);
+
+const strapiUrl = import.meta.env.PUBLIC_STRAPI_URL ?? "http://localhost:1337";
+const data = await fetch(
+  `${strapiUrl}/api/noticias?populate[filial][populate]=*&populate[ImagenPrincipal][populate]=*&filters[Mostrar][$eq]=true&pagination[pageSize]=100&sort=publishedAt:desc`,
+);
+const dataJson = await data.json();
+const sortedPosts = mapNews(dataJson.data ?? []);
+const totalPages = Math.ceil(sortedPosts.length / config.settings.pagination);
+const currentPosts = sortedPosts.slice(0, config.settings.pagination);
+
+---
+
+<Base>
+  <section class="section">
+    <div class="container">
+      <Posts posts={currentPosts} className="mb-16" />
+      <Pagination currentPage={1} totalPages={totalPages} />
+    </div>
+  </section>
+</Base>

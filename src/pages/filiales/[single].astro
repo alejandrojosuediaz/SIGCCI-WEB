@@ -1,0 +1,66 @@
+---
+import Posts from "@/components/Posts.astro";
+import Base from "@/layouts/Base.astro";
+import { getFilialId, getFilialLogo, getFilials, getStrapiAssetUrl } from "@/lib/filials";
+import { mapNews } from "@/lib/utils/map";
+import { Image } from "astro:assets";
+
+const { single } = Astro.params;
+const strapiUrl = import.meta.env.PUBLIC_STRAPI_URL ?? "http://localhost:1337";
+const filials = await getFilials();
+const filial = filials.find((item) => getFilialId(item) === single);
+const title = filial?.Filial ?? "Filial";
+const image = getStrapiAssetUrl(getFilialLogo(filial ?? {}), strapiUrl);
+
+const query = new URLSearchParams({
+  "filters[Mostrar]": "true",
+  "filters[filial][documentId][$eq]": single ?? "",
+  "populate[filial][populate]": "*",
+  "populate[ImagenPrincipal][populate]": "*",
+  "pagination[pageSize]": "100",
+  "sort": "publishedAt:desc",
+});
+
+const response = await fetch(`${strapiUrl}/api/noticias?${query.toString()}`);
+const result = await response.json();
+const posts = mapNews(result.data ?? []);
+---
+
+<Base
+  title={title}
+  meta_title={title}
+  description={`${title} noticias`}
+  image={image}
+>
+  <section class="section">
+    <div class="container">
+      <div class="mb-12 text-center md:px-24">
+        {
+          image && (
+            <div class="mb-8">
+              <Image
+                src={image}
+                class="mx-auto rounded-lg"
+                height={150}
+                width={150}
+                alt={title}
+              />
+            </div>
+          )
+        }
+        <h1 class="page-heading h2 mb-8">{title}</h1>
+      </div>
+
+      {
+        posts.length > 0 ? (
+          <>
+            <h2 class="mb-8 text-center h3">Publicaciones</h2>
+            <Posts posts={posts} />
+          </>
+        ) : (
+          <p class="text-center text-text">No hay noticias disponibles.</p>
+        )
+      }
+    </div>
+  </section>
+</Base>

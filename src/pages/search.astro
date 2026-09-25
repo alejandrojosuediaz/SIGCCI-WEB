@@ -1,0 +1,30 @@
+---
+import SearchBar from "@/helpers/SearchBar";
+import Base from "@/layouts/Base.astro";
+import { mapNews } from "@/lib/utils/map";
+
+const strapiUrl = import.meta.env.PUBLIC_STRAPI_URL ?? "http://localhost:1337";
+const response = await fetch(
+  `${strapiUrl}/api/noticias?populate[filial][populate]=*&populate[ImagenPrincipal][populate]=*&filters[Mostrar][$eq]=true&pagination[pageSize]=100&sort=publishedAt:desc`,
+);
+const result = await response.json();
+const posts = mapNews(result.data ?? []);
+
+const searchList = posts.map((item) => ({
+  slug: `blog/${item.id}`,
+  data: item.data,
+  content: item.body,
+}));
+---
+
+<Base title={`Search`}>
+  <section class="section">
+    <div class="container">
+      <SearchBar
+        client:load
+        searchList={searchList}
+        imageBaseUrl={strapiUrl}
+      />
+    </div>
+  </section>
+</Base>

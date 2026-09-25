@@ -1,0 +1,41 @@
+---
+import Empresas from "@/components/Empresas.astro";
+import config from "@/config/config.json";
+import Base from "@/layouts/Base.astro";
+import Pagination from "@/layouts/components/Pagination.astro";
+import { getEmpresas } from "@/lib/empresas";
+
+export async function getStaticPaths() {
+  const empresas = await getEmpresas();
+  const totalPages = Math.ceil(empresas.length / config.settings.pagination);
+  const paths = [];
+
+  for (let page = 2; page <= totalPages; page++) {
+    paths.push({ params: { slug: page.toString() } });
+  }
+
+  return paths;
+}
+
+const { slug } = Astro.params;
+const empresas = await getEmpresas();
+const totalPages = Math.ceil(empresas.length / config.settings.pagination);
+const currentPage = slug && !isNaN(Number(slug)) ? Number(slug) : 1;
+const indexOfLastEmpresa = currentPage * config.settings.pagination;
+const indexOfFirstEmpresa = indexOfLastEmpresa - config.settings.pagination;
+const currentEmpresas = empresas.slice(indexOfFirstEmpresa, indexOfLastEmpresa);
+---
+
+<Base title={"Empresas"}>
+  <section class="section">
+    <div class="container">
+      <h1 class="page-heading h2">Empresas</h1>
+      <Empresas empresas={currentEmpresas} />
+      <Pagination
+        section={"empresas"}
+        currentPage={currentPage}
+        totalPages={totalPages}
+      />
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,49 @@
+---
+import Base from "@/layouts/Base.astro";
+import { BlocksRenderer, type BlocksContent } from "@strapi/blocks-react-renderer";
+
+const { single } = Astro.params;
+const strapiUrl = import.meta.env.PUBLIC_STRAPI_URL ?? "http://localhost:1337";
+
+const query = new URLSearchParams({
+  "filters[Mostrar][$eq]": "true",
+  "filters[slug][$eq]": single ?? "",
+});
+const data = await fetch(`${strapiUrl}/api/noticias?${query.toString()}`);
+const noticias = await data.json();
+const noticia = noticias.data?.[0];
+const title = noticia?.TituloPrincipal ?? "Noticia";
+const description = noticia?.DescripcionCorta ?? "";
+const image = noticia?.ImagenPrincipal?.url;
+const content: BlocksContent = noticia?.Cuerpo || [
+  {
+          "type": "quote",
+          "children": [
+            {
+              "text": "No hay contenido disponible para esta noticia.",
+              "type": "text"
+            }
+          ]
+        },
+];
+---
+
+<Base
+  title={title}
+  meta_title={title}
+  description={description}
+  image={image}
+>
+  <!-- <PostSingle post={post} /> -->
+  <section class="section">
+    <div class="container">
+      <article class="row justify-center">
+        <div class="md:col-10">
+          <div class="content mb-16 text-left">
+            <BlocksRenderer content={content} />
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+</Base>

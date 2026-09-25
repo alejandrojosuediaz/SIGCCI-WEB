@@ -1,0 +1,59 @@
+---
+import {
+  getEmpresaId,
+  getEmpresaLogo,
+  getStrapiAssetUrl,
+  type Empresa,
+} from "@/lib/empresas";
+import { Image } from "astro:assets";
+import { BsArrowRightCircle } from "react-icons/bs";
+
+type Props = {
+  empresas: Empresa[];
+};
+
+const { empresas } = Astro.props;
+const strapiUrl = import.meta.env.PUBLIC_STRAPI_URL ?? "http://localhost:1337";
+---
+
+<div class="row justify-center">
+  {
+    empresas.map((empresa) => {
+      const title = empresa.NombreEmpresa ?? "Empresa";
+      const commercialName = empresa.NombreComercial;
+      const logo = getStrapiAssetUrl(getEmpresaLogo(empresa), strapiUrl);
+      const id = getEmpresaId(empresa);
+
+      return (
+        <div class="col-12 mb-8 sm:col-6 md:col-4">
+          {logo && (
+            <div class="mb-4">
+              <Image
+                src={logo}
+                alt={title}
+                height={150}
+                width={150}
+                class="mx-auto h-[150px] w-[150px] rounded-lg object-contain"
+              />
+            </div>
+          )}
+          <h3 class="h4 mt-8 mb-3">
+            <a
+              href={`/empresas/${id}`}
+              class="block hover:text-primary transition duration-200"
+            >
+              {title}
+            </a>
+          </h3>
+          {commercialName && <p class="mb-3 text-text">{commercialName}</p>}
+          <a
+            href={`/empresas/${id}`}
+            class="inline-flex items-center text-primary transition duration-200 hover:opacity-70"
+          >
+            Ver empresa <BsArrowRightCircle className="inline ml-2" />
+          </a>
+        </div>
+      );
+    })
+  }
+</div>

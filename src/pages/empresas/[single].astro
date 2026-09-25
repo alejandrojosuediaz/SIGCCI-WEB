@@ -1,0 +1,68 @@
+---
+import Base from "@/layouts/Base.astro";
+import {
+  getEmpresaId,
+  getEmpresaLogo,
+  getEmpresas,
+  getStrapiAssetUrl,
+} from "@/lib/empresas";
+import { Image } from "astro:assets";
+
+const { single } = Astro.params;
+const strapiUrl = import.meta.env.PUBLIC_STRAPI_URL ?? "http://localhost:1337";
+const empresas = await getEmpresas();
+const empresa = empresas.find((item) => getEmpresaId(item) === single);
+const title = empresa?.NombreEmpresa ?? "Empresa";
+const image = getStrapiAssetUrl(getEmpresaLogo(empresa ?? {}), strapiUrl);
+---
+
+<Base title={title} meta_title={title} image={image}>
+  <section class="section">
+    <div class="container">
+      <div class="mb-12 text-center md:px-24">
+        {
+          image && (
+            <div class="mb-8">
+              <Image
+                src={image}
+                alt={title}
+                height={150}
+                width={150}
+                class="mx-auto h-[150px] w-[150px] rounded-lg object-contain"
+              />
+            </div>
+          )
+        }
+        <h1 class="page-heading h2 mb-8">{title}</h1>
+        {empresa?.NombreComercial && (
+          <p class="text-lg text-text">{empresa.NombreComercial}</p>
+        )}
+      </div>
+
+      {empresa ? (
+        <div class="mx-auto max-w-3xl">
+          <dl class="row gy-4">
+            {[
+              ["Actividad empresarial", empresa.ActividadEmpresarial],
+              ["Dirección", empresa.Direccion],
+              ["Teléfono", empresa.Celular],
+              ["Correo electrónico", empresa.CorreoElectronico],
+              ["Representante", empresa.NombreRepresentante],
+              ["Clasificación", empresa.Clasificacion],
+            ].map(
+              ([label, value]) =>
+                value && (
+                  <div class="col-12 sm:col-6">
+                    <dt class="font-semibold text-dark">{label}</dt>
+                    <dd class="mt-1 text-text">{value}</dd>
+                  </div>
+                ),
+            )}
+          </dl>
+        </div>
+      ) : (
+        <p class="text-center text-text">No se encontró la empresa.</p>
+      )}
+    </div>
+  </section>
+</Base>

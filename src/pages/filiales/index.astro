@@ -1,0 +1,21 @@
+---
+import Filials from "@/components/Filials.astro";
+import config from "@/config/config.json";
+import Base from "@/layouts/Base.astro";
+import Pagination from "@/layouts/components/Pagination.astro";
+import { getFilials } from "@/lib/filials";
+
+const filials = await getFilials();
+const totalPages = Math.ceil(filials.length / config.settings.pagination);
+const currentPosts = filials.slice(0, config.settings.pagination);
+---
+
+<Base title={"Filiales"}>
+  <section class="section">
+    <div class="container text-center">
+      <h1 class="page-heading h2">Filiales</h1>
+      <Filials filials={currentPosts} />
+      <Pagination section={"filiales"} currentPage={1} totalPages={totalPages} />
+    </div>
+  </section>
+</Base>

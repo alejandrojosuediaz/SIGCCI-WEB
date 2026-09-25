@@ -1,0 +1,45 @@
+{
+  "main": [
+    {
+      "name": "Inicio",
+      "url": "/"
+    },
+    {
+      "name": "Perfil organizacional",
+      "url": "/about"
+    },
+    {
+      "name": "Contacto",
+      "url": "/contact"
+    },
+    {
+      "name": "Otros",
+      "url": "",
+      "hasChildren": true,
+      "children": [
+        {
+          "name": "Colaboradores",
+          "url": "/authors"
+        },
+        {
+          "name": "Filiales",
+          "url": "/filiales"
+        },
+        {
+          "name": "Empresas",
+          "url": "/empresas"
+        }
+      ]
+    }
+  ],
+  "footer": [
+    {
+      "name": "Perfil organizacional",
+      "url": "/about"
+    },
+    {
+      "name": "Contacto",
+      "url": "/contact"
+    }
+  ]
+}
