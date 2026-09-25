@@ -14,17 +14,28 @@ const { contact_form_action } = config.params;
 const { address, email, phone } = config.contactinfo;
 const { title, description, meta_title, image } = entry.data;
 
-const data = await fetch("http://localhost:1337/api/configuracion", {
-  method: "GET",
-  headers: {
-    "Content-Type": "application/json",
-  }
-});
+const strapiUrl = import.meta.env.PUBLIC_STRAPI_URL ?? "http://localhost:1337";
+let contactPhones = phone;
+let contactEmail = email;
+let contactAddress = address;
 
-const jsonData = await data.json();
-const contactPhones = jsonData.data?.Telefonos || '';
-const contactEmail = jsonData.data?.CorreosElectronicos || '';
-const contactAddress = jsonData.data?.Direccion || '';
+try {
+  const response = await fetch(`${strapiUrl}/api/configuracion`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (response.ok) {
+    const jsonData = await response.json();
+    contactPhones = jsonData.data?.Telefonos || phone;
+    contactEmail = jsonData.data?.CorreosElectronicos || email;
+    contactAddress = jsonData.data?.Direccion || address;
+  }
+} catch {
+  // Keep the configured contact details when Strapi is unavailable.
+}
 
 ---
 <Base
