@@ -54,7 +54,8 @@ export interface ApiResponse {
 
 export const getSections = async (): Promise<Data | null> => {
   try {
-    const res = await fetch("http://localhost:1337/api/perfil-organizacional/completo");
+    const strapiUrl = import.meta.env.PUBLIC_STRAPI_URL ?? "http://localhost:1337";
+    const res = await fetch(`${strapiUrl}/api/perfil-organizacional/completo`);
 
     if (!res.ok) {
       console.error("Error fetching data:", res.status, res.statusText);
