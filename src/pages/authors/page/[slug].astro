@@ -7,6 +7,8 @@ import { getSinglePage } from "@/lib/contentParser.astro";
 import { sortByDate } from "@/lib/utils/sortFunctions";
 import { markdownify } from "@/lib/utils/textConverter";
 
+export const prerender = true;
+
 export async function getStaticPaths() {
   const authors = await getSinglePage("authors");
   const totalPages = Math.ceil(authors.length / config.settings.pagination);

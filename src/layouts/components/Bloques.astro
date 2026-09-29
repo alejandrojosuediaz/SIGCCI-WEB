@@ -1,0 +1,20 @@
+---
+import type { Bloques } from "@/lib/AboutPage";
+const { Titulo, Bloque } = Astro.props as Bloques;
+---
+
+<section class="section pt-0">
+  <div class="container">
+    <h3 class="page-heading mb-20">{Titulo}</h3>
+    <div class="row justify-center gy-4 text-center">
+      {
+        Bloque.map((item) => (
+          <div class="lg:col-4 md:col-6">
+            <h4 class="text-dark font-weight-700 mb-3">{item.Titulo}</h4>
+            <p>{item.Descripcion}</p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

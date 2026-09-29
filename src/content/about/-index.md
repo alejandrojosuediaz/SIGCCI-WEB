@@ -13,7 +13,7 @@ what_i_do:
   - title: "Photography"
     description: "Aenean maximus urna magna elementum, quis rutrum mi semper non purus eget ipsum venenatis."
   
-  - title: "Web Research"
+  - title: "Web Researh"
     description: "Aenean maximus urna magna elementum venenatis, quis semper non purus eget ipsum venenatis."
 
 ---

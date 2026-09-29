@@ -4,6 +4,8 @@ import { getSinglePage } from "@/lib/contentParser.astro";
 import { markdownify } from "@/lib/utils/textConverter";
 import { render } from "astro:content";
 
+export const prerender = true;
+
 export async function getStaticPaths() {
   const pages = await getSinglePage("pages");
 
@@ -16,7 +18,12 @@ export async function getStaticPaths() {
   return paths;
 }
 
-const { page } = Astro.props;
+const page = Astro.props.page ?? (await getSinglePage("pages")).find((entry) => entry.id === Astro.params.regular);
+
+if (!page) {
+  throw new Error(`Page not found: ${Astro.params.regular}`);
+}
+
 const { title, meta_title, description, image } = page.data;
 const { Content } = await render(page);
 ---

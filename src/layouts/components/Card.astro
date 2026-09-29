@@ -1,0 +1,46 @@
+---
+import { Image } from "astro:assets";
+import type { Tarjeta } from "@/lib/AboutPage";
+const { Titulo, Descripcion, Imagen } = Astro.props as Tarjeta;
+const strapiUrl = import.meta.env.PUBLIC_STRAPI_URL ?? "http://localhost:1337";
+
+---
+
+<section class="section py-12 md:py-16">
+  <div class="container">
+    <article class="group relative overflow-hidden rounded-[26px] border border-[#D5D5D5] bg-white p-4 shadow-[0_16px_30px_rgba(21,32,53,0.06)] md:p-8">
+      <div class="absolute inset-x-0 top-0 h-1.5 bg-[#01AD9F]" />
+      <div class="row items-center md:gx-8">
+        <div class="sm:col-5 md:col-4">
+          {
+            Imagen && (
+              <div class="relative mb-6 overflow-hidden rounded-[20px] border border-[#D5D5D5] bg-[#FAFAFA] p-2 shadow-[0_12px_22px_rgba(21,32,53,0.08)] sm:mb-0">
+                <Image
+                  src={strapiUrl + Imagen.url}
+                  width={295}
+                  height={395}
+                  alt={Titulo}
+                  class="relative h-full w-full rounded-[14px] object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+                />
+              </div>
+            )
+          }
+        </div>
+        <div class="sm:col-7 md:col-8">
+          <div class="space-y-5">
+            <h1 class="h3 mb-0 text-[#152035]">{Titulo}</h1>
+            <div class="content text-base leading-relaxed text-[#747577] md:text-lg">
+              <p>{Descripcion}</p>
+            </div>
+            <a
+              href="/contact"
+              class="btn btn-primary inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold text-white shadow-[0_12px_18px_rgba(1,173,159,0.25)] transition-all duration-300 hover:-translate-y-0.5"
+            >
+              Ponte en contacto
+            </a>
+          </div>
+        </div>
+      </div>
+    </article>
+  </div>
+</section>
